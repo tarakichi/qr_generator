@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+@tailwind utilities;
+
+@layer components {
+    .bcgd-black {
+        @apply bg-black text-white;
+    }
+    .bcgd-red {
+        @apply bg-red-500 text-red-800;
+    }
+    .bcgd-blue {
+        @apply bg-blue-500 text-blue-800;
+    }
+    .bcgd-yellow {
+        @apply bg-yellow-500 text-yellow-800;
+    }
+    .bcgd-orange {
+        @apply bg-orange-500 text-orange-800;
+    }
+    .bcgd-green {
+        @apply bg-green-500 text-green-800;
+    }
+    .bcgd-lightblue {
+        @apply bg-sky-500 text-sky-800;
+    }
+    .bcgd-white {
+        @apply bg-white text-black;
+    }
+    .bcgd-purple {
+        @apply bg-purple-500 text-purple-800;
+    }
+    .bcgd-silver {
+        @apply bg-gray-500 text-gray-800;
+    }
+    .bcgd-gold {
+        @apply bg-amber-500 text-amber-800;
+    }
+    .bcgd-pink {
+        @apply bg-pink-500 text-pink-800;
+    }
+}
