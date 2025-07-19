@@ -27,6 +27,10 @@ function App() {
     handleNext();
   };
 
+  const handleDelete = (index: number) => {
+    setSaved(saved.filter((_, i) => i !== index));
+  }
+
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-xl font-bold">QR Generator</h1>
