@@ -30,7 +30,7 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = subscribeQRData(setQRList);
-    return () => unsubscribe();
+    return () => unsubscribe?.();
   }, []);
 
   const handleNext = () => {
@@ -179,6 +179,8 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* <img src="/GTKvlqxbQAIZ4jY.jfif" alt="体格表" /> */}
 
       <div className="w-full max-w-4xl">
         <h2 className="font-semibold mt-4">保存済みQRコード:</h2>

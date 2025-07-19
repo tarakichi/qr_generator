@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, onSnapshot, orderBy, query, Timestamp } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import type { LabelEntry, QRData } from "./types";
 
 const firebaseConfig = {
@@ -34,7 +35,10 @@ export const fetchQRData = async () => {
 }
 
 export const subscribeQRData = (callback: (data: QRData[]) => void) => {
-    const q = query(collection(db, "qrCodes"), orderBy("createdAt", "desc"));
+    const q = query(
+        collection(db, "qrCodes"),
+        orderBy("createdAt", "desc")
+    );
     return onSnapshot(q, (snapshot) => {
         const data = snapshot.docs.map(doc => ({
             id: doc.id,
@@ -52,3 +56,6 @@ export const deleteQRData = async (id: string) => {
         console.error("❌ 削除に失敗しました:", error);
     }
 };
+
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
