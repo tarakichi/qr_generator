@@ -85,14 +85,14 @@ function App() {
             type="text"
             value={labelInput.name}
             onChange={(e) => setLabelInput({ ...labelInput, name: e.target.value })}
-            className="w-3/4 border text-center rounded border-gray-200"
+            className="w-3/4 bg-white border text-center rounded border-gray-200"
             placeholder="名前"
           />
 
           <select
             value={labelInput.antenna || ""}
             onChange={(e) => setLabelInput({ ...labelInput, antenna: e.target.value as AntennaID })}
-            className="w-3/4 border text-center rounded border-gray-200"
+            className="w-3/4 bg-white border text-center rounded border-gray-200"
           >
             <option value="">(アンテナ)</option>
             {antennaOptions.map(opt => (
@@ -103,7 +103,7 @@ function App() {
           <select
             value={labelInput.head || ""}
             onChange={(e) => setLabelInput({ ...labelInput, head: e.target.value as HeadID })}
-            className="w-3/4 border text-center rounded border-gray-200"
+            className="w-3/4 bg-white border text-center rounded border-gray-200"
           >
             <option value="">(頭の形)</option>
             {headOptions.map(opt => (
@@ -114,7 +114,7 @@ function App() {
           <select
             value={labelInput.color || ""}
             onChange={(e) => setLabelInput({ ...labelInput, color: e.target.value as ColorID })}
-            className="w-3/4 border text-center rounded border-gray-200"
+            className="w-3/4 bg-white border text-center rounded border-gray-200"
           >
             <option value="">(色)</option>
             {colorOptions.map(opt => (
@@ -122,7 +122,7 @@ function App() {
             ))}
           </select>
           
-          <div className="w-3/4 flex justify-center items-center space-x-2">
+          <div className="w-3/4 bg-white flex justify-center items-center space-x-2 rounded">
             <label htmlFor="hp">&#xff28;&#xff30;:</label>
             <input
               id="hp"
@@ -136,7 +136,7 @@ function App() {
             <span>{labelInput.hp ?? 0}</span>
           </div>
           
-          <div className="w-3/4 flex justify-center items-center space-x-2">
+          <div className="w-3/4 bg-white flex justify-center items-center space-x-2 rounded">
             <label htmlFor="evasion">回避:</label>
             <input
               id="evasion"
@@ -153,7 +153,7 @@ function App() {
           <textarea
             value={labelInput.notes}
             onChange={(e) => setLabelInput({ ...labelInput, notes: e.target.value })}
-            className="w-3/4 border text-center rounded border-gray-200"
+            className="w-3/4 bg-white border text-center rounded border-gray-200"
             placeholder="メモ"
           />
           <div className="flex justify-center gap-2">
