@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
-import { addQRData, deleteQRData, subscribeQRData } from './firebase';
+import { addQRData, deleteQRData, subscribeQRData } from './lib/firebase/qrData';
 import type { AntennaID, ColorID, HeadID, LabelEntry, QRData } from './types';
-import { antennaOptions, colorOptions, headOptions } from './options';
+import { antennaOptions, colorOptions, headOptions } from './constants/options';
+import BodyChart from './components/BodyChart';
+import { useAuth } from './hooks/useAuth';
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { auth } from './firebase';
+import { adminUIDs } from './constants/adminUIDs';
 
 function generateRandomString(length = 40) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -15,6 +20,8 @@ const colorLabelMap: Record<ColorID, string> = colorOptions.reduce((acc, cur) =>
 }, {} as Record<ColorID, string>);
 
 function App() {
+  const { user, loading } = useAuth();
+  const isAdmin = user && adminUIDs.includes(user.uid);
   const [QRList, setQRList] = useState<QRData[]>([]);
   const [currentValue, setCurrentValue] = useState(generateRandomString());
   const [labelInput, setLabelInput] = useState<LabelEntry>({
@@ -33,6 +40,25 @@ function App() {
     return () => unsubscribe?.();
   }, []);
 
+  const handleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      console.log("ログイン成功");
+    } catch (error) {
+      console.log("ログインエラー", error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("ログアウトしました");
+    } catch (error) {
+      console.log("ログアウトエラー", error);
+    }
+  }
+
   const handleNext = () => {
     setCurrentValue(generateRandomString());
     setLabelList([]);
@@ -42,10 +68,13 @@ function App() {
   const handleSave = async () => {
     const id = await addQRData(currentValue, labelList);
     console.log("保存完了 ID:", id);
+    alert(`保存完了 ID: ${id}`);
   }
 
   const handleDelete = async (id: string) => {
     await deleteQRData(id);
+    console.log("削除完了 ID:", id);
+    alert(`削除完了 ID: ${id}`);
   }
 
   const resetLabelInput = () => {
@@ -69,9 +98,23 @@ function App() {
     setLabelList(labelList.filter((_, i) => i !== index));
   }
 
+  if (loading) return <div>読み込み中...</div>
+
   return (
     <div className="w-screen flex flex-col items-center p-6 space-y-6">
-      <h1 className="text-xl font-bold">QR Generator with Save/Load</h1>
+      <h1 className="text-xl font-bold text-cyan-700 font-notosans">QR Generator for The Denpa Men</h1>
+      <div>
+        {user ? (
+          <div>
+            <p>こんにちは、{user.displayName || user.email}</p>
+            <button onClick={handleLogout}>ログアウト</button>
+          </div>
+        ) : (
+          <div>
+            <button onClick={handleLogin}>Googleでログイン</button>
+          </div>
+        )}
+      </div>
       <div className="w-full flex gap-2">
         <div className="w-1/2 flex flex-col items-center border border-gray-200 p-4 bg-white">
             <QRCode value={currentValue}/>
@@ -177,134 +220,7 @@ function App() {
         </div>
       </div>
 
-      <img src="/GTKvlqxbQAIZ4jY.jfif" alt="体格表" />
-
-      <table className="bg-white">
-        <caption>
-          体格表
-          </caption>
-          <thead>
-            <tr>
-              <th colSpan={4}></th>
-              <th colSpan={2}>回避0</th>
-              <th colSpan={2}>回避3</th>
-            </tr>
-            <tr>
-              <th colSpan={4}></th>
-              <th>最速</th>
-              <th>最大</th>
-              <th>最速</th>
-              <th>最大</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th colSpan={4}>アンテナなし</th>
-              <td>29</td>
-              <td>40</td>
-              <td>24</td>
-              <td>37</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>全体攻撃、眠りマヒ毒、弱体系</th>
-              <td>27</td>
-              <td>37</td>
-              <td>22</td>
-              <td>35</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>単体攻撃（ひのたまetc...）</th>
-              <td>24</td>
-              <td>33</td>
-              <td>19</td>
-              <td>30</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>三体攻撃（ばくはつetc...）</th>
-              <td>25</td>
-              <td>34</td>
-              <td>20</td>
-              <td>32</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>めざめる、しびれとる</th>
-              <td>35</td>
-              <td>46</td>
-              <td>30</td>
-              <td>43</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>げどく</th>
-              <td>33</td>
-              <td>44</td>
-              <td>28</td>
-              <td>41</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>単体増強</th>
-              <td>27</td>
-              <td>36</td>
-              <td>22</td>
-              <td>33</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>全体増強</th>
-              <td>27</td>
-              <td>35</td>
-              <td>23</td>
-              <td>33</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>単体回復</th>
-              <td>31</td>
-              <td>42</td>
-              <td>26</td>
-              <td>39</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>単体復活</th>
-              <td>33</td>
-              <td>44</td>
-              <td>28</td>
-              <td>41</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>みんな回復</th>
-              <td>34</td>
-              <td>45</td>
-              <td>29</td>
-              <td>42</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>みんな復活</th>
-              <td>36</td>
-              <td>46</td>
-              <td>31</td>
-              <td>44</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>たくわえる</th>
-              <td>34</td>
-              <td>45</td>
-              <td>29</td>
-              <td>42</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>なおす</th>
-              <td>32</td>
-              <td>43</td>
-              <td>27</td>
-              <td>40</td>
-            </tr>
-            <tr>
-              <th colSpan={4}>ステルス</th>
-              <td>19</td>
-              <td>27</td>
-              <td>15</td>
-              <td>25</td>
-            </tr>
-          </tbody>
-      </table>
+      <BodyChart/>
 
       <div className="w-full max-w-4xl">
         <h2 className="font-semibold mt-4">保存済みQRコード:</h2>
@@ -328,12 +244,14 @@ function App() {
                   </div>
                 ))}
               </div>
-              <button
-                onClick={() => handleDelete(item.id)}
-                className="text-red-500 ml-auto"
-              >
-                削除
-              </button>
+              {(isAdmin || user?.uid === item.uid) && (
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="text-red-500 ml-auto"
+                >
+                  削除
+                </button>
+              )}
             </li>
           ))}
         </ul>

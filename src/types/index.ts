@@ -1,4 +1,4 @@
-import type { antennaOptions, colorOptions, headOptions } from "./options";
+import type { antennaOptions, colorOptions, headOptions } from "../constants/options";
 
 export type AntennaID = typeof antennaOptions[number]["id"];
 export type HeadID = typeof headOptions[number]["id"];
@@ -18,4 +18,5 @@ export type QRData = {
     id: string;
     value: string;
     label: LabelEntry[];
+    uid?: string;
 };
