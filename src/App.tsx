@@ -3,11 +3,12 @@ import QRCode from 'react-qr-code';
 import { addQRData, deleteQRData, subscribeQRData } from './lib/firebase/qrData';
 import type { AntennaID, ColorID, HeadID, LabelEntry, QRData } from './types';
 import { antennaOptions, colorOptions, headOptions } from './constants/options';
-import BodyChart from './components/BodyChart';
+import { BodyChart } from './components/BodyChart';
 import { useAuth } from './hooks/useAuth';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import { adminUIDs } from './constants/adminUIDs';
+import { GoogleIcon } from './components/GoogleIcon';
 
 function generateRandomString(length = 40) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -102,37 +103,48 @@ function App() {
 
   return (
     <div className="w-screen flex flex-col items-center p-6 space-y-6">
-      <h1 className="text-xl font-bold text-cyan-700 font-notosans">QR Generator for The Denpa Men</h1>
-      <div>
+      <h1 className="text-xl font-bold text-zinc-200 font-notosans">QRコードジェネレータ</h1>
+      <div className="w-1/2 bg-white p-4 rounded border border-zinc-200">
         {user ? (
-          <div>
-            <p>こんにちは、{user.displayName || user.email}</p>
-            <button onClick={handleLogout}>ログアウト</button>
+          <div className="flex justify-center items-center gap-4">
+            <p className="text-zinc-700">こんにちは、{user.displayName || user.email}</p>
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center space-x-3 border border-zinc-200 px-4 py-2 rounded shadow hover:shadow-lg transition bg-white text-zinc-300"
+            >
+              <span className="text-sm font-bold font-notosans">ログアウト</span>
+            </button>
           </div>
         ) : (
-          <div>
-            <button onClick={handleLogin}>Googleでログイン</button>
+          <div className="flex flex-col items-center">
+            <button
+              onClick={handleLogin}
+              className="flex items-center justify-center space-x-3 border border-zinc-200 px-4 py-2 rounded shadow hover:shadow-lg transition bg-white text-zinc-300"
+            >
+              <GoogleIcon />
+              <span className="text-sm font-bold font-notosans">Sign in with Google</span>
+            </button>
           </div>
         )}
       </div>
       <div className="w-full flex gap-2">
-        <div className="w-1/2 flex flex-col items-center border border-gray-200 p-4 bg-white">
+        <div className="w-1/2 flex flex-col items-center border border-zinc-200 p-4 bg-white rounded">
             <QRCode value={currentValue}/>
             <p className="mt-2 text-xs text-gray-600">Value: {currentValue}</p>
         </div>
-        <div className="w-1/2 flex flex-col items-center border border-gray-200 p-4 gap-2 bg-white">
+        <div className="w-1/2 flex flex-col items-center border border-zinc-200 p-4 gap-2 bg-white rounded">
           <input
             type="text"
             value={labelInput.name}
             onChange={(e) => setLabelInput({ ...labelInput, name: e.target.value })}
-            className="w-3/4 bg-white border text-center rounded border-gray-200"
+            className="w-3/4 bg-white border text-center rounded border-zinc-200"
             placeholder="名前"
           />
 
           <select
             value={labelInput.antenna || ""}
             onChange={(e) => setLabelInput({ ...labelInput, antenna: e.target.value as AntennaID })}
-            className="w-3/4 bg-white border text-center rounded border-gray-200"
+            className="w-3/4 bg-white border text-center rounded border-zinc-200"
           >
             <option value="">(アンテナ)</option>
             {antennaOptions.map(opt => (
@@ -143,7 +155,7 @@ function App() {
           <select
             value={labelInput.head || ""}
             onChange={(e) => setLabelInput({ ...labelInput, head: e.target.value as HeadID })}
-            className="w-3/4 bg-white border text-center rounded border-gray-200"
+            className="w-3/4 bg-white border text-center rounded border-zinc-200"
           >
             <option value="">(頭の形)</option>
             {headOptions.map(opt => (
@@ -154,7 +166,7 @@ function App() {
           <select
             value={labelInput.color || ""}
             onChange={(e) => setLabelInput({ ...labelInput, color: e.target.value as ColorID })}
-            className="w-3/4 bg-white border text-center rounded border-gray-200"
+            className="w-3/4 bg-white border text-center rounded border-zinc-200"
           >
             <option value="">(色)</option>
             {colorOptions.map(opt => (
@@ -193,7 +205,7 @@ function App() {
           <textarea
             value={labelInput.notes}
             onChange={(e) => setLabelInput({ ...labelInput, notes: e.target.value })}
-            className="w-3/4 bg-white border text-center rounded border-gray-200"
+            className="w-3/4 bg-white border text-center rounded border-zinc-200"
             placeholder="メモ"
           />
           <div className="flex justify-center gap-2">
@@ -224,14 +236,14 @@ function App() {
 
       <div className="w-full max-w-4xl">
         <h2 className="font-semibold mt-4">保存済みQRコード:</h2>
-        <ul className="mt-2 space-y-4">
+        <ul className="w-full mt-2 space-y-4">
           {QRList.map((item) => (
-            <li key={item.id} className="flex items-start space-x-4 border p-4 border-gray-200">
-              <div>
+            <li key={item.id} className="flex w-full items-start border p-4 border-gray-200">
+              <div className="w-2/3">
                 <QRCode value={item.value} size={64}/>
-                <div className="mt-2 text-sm text-gray-600">Value: {item.value}</div>
+                <div className="mt-2 text-sm text-cyan-700">Value: {item.value}</div>
               </div>
-              <div className="flex flex-col space-y-1">
+              <div className="flex w-1/3 space-y-1">
                 {item.label.map((lbl, index) => (
                   <div key={index} className={`p-2 rounded bcgd-${lbl.color}`}>
                     <div>名前: {lbl.name}</div>
@@ -244,7 +256,7 @@ function App() {
                   </div>
                 ))}
               </div>
-              {(isAdmin || user?.uid === item.uid) && (
+              {( user && (isAdmin || user?.uid === item.uid)) && (
                 <button
                   onClick={() => handleDelete(item.id)}
                   className="text-red-500 ml-auto"
