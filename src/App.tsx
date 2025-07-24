@@ -78,6 +78,8 @@ function App() {
     }
 
     const handleDelete = async (id: string) => {
+        const ok = window.confirm("このQRコードを削除しますか？");
+        if (!ok) return;
         await deleteQRData(id);
         console.log("削除完了 ID:", id);
         alert(`削除完了 ID: ${id}`);
