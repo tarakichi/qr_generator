@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
 import { auth, db } from '../../firebase';
 import type { LabelEntry, QRData } from "../../types";
 
@@ -39,3 +39,8 @@ export const subscribeQRData = (callback: (data: QRData[]) => void) => {
         callback(data);
     });
 };
+
+export const updateQRLabel = async (qrId: string, newLabelList: LabelEntry[]) => {
+    const ref = doc(db, "qrCodes", qrId);
+    await updateDoc(ref, { label: newLabelList });
+}
