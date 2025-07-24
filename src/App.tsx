@@ -108,149 +108,171 @@ function App() {
 
     return (
         <div className="w-screen flex flex-col items-center p-6 space-y-6">
-            <h1 className="text-xl font-bold text-zinc-200">QRコードジェネレータ</h1>
-            <div className="w-1/2 bg-white p-4 rounded border border-zinc-200">
+            <h1 className="text-xl font-bold text-zinc-300">QRコードジェネレータ</h1>
+            <div className="w-1/2 max-w-4xl bg-white p-4 rounded border border-zinc-200">
                 {user ? (
-                    <div className="flex justify-center items-center gap-4">
+                    <div className="flex flex-col justify-center items-center gap-4">
+                        <img
+                            src={user.photoURL ?? ""}
+                            alt="User Icon"
+                            className="w-10 h-10 rounded-full border border-zinc-200"
+                        />
                         <p className="text-zinc-700">こんにちは、{user.displayName || user.email}</p>
                         <button
                             onClick={handleLogout}
                             className="flex items-center justify-center space-x-3 border border-zinc-200 px-4 py-2 rounded shadow hover:shadow-lg transition bg-white"
                         >
-                        <span className="text-sm font-bold text-zinc-300">ログアウト</span>
+                            <span className="text-sm font-bold text-zinc-300">ログアウト</span>
                         </button>
                     </div>
                 ) : (
                     <div className="flex flex-col items-center">
                         <button
                             onClick={handleLogin}
-                            className="flex items-center justify-center space-x-3 border border-zinc-200 px-4 py-2 rounded shadow hover:shadow-lg transition bg-white"
+                            className="flex items-center justify-center space-x-3 border border-zinc-200 px-4 py-2 rounded shadow hover:shadow-lg transition bg-white mb-4"
                         >
                         <GoogleIcon />
                         <span className="text-sm font-bold text-zinc-300">Googleでログイン</span>
                         </button>
+                        <p className="text-xs text-zinc-300">※QRコードの保存にはログインが必要です。</p>
                     </div>
                 )}
+                <img src="/Primary_Horizontal_Lockup_Full_Color.png" alt="firebase logo" className="ml-auto mr-0 mt-4 max-w-18" />
             </div>
-            <div className="w-full flex gap-2">
-                <div className="w-1/2 flex flex-col items-center border border-zinc-200 p-4 bg-white rounded gap-2">
+            <div className="w-full flex gap-2 justify-center">
+                <div className="w-1/2 max-w-2xl flex flex-col items-center border border-zinc-200 p-4 bg-white rounded gap-2">
                     <QRCode value={currentValue}/>
                     <p className="text-xs text-zinc-300">Value: {currentValue}</p>
                     <div className="flex justify-center gap-2">
                         <button onClick={handleNext} className="bg-blue-500 text-white px-3 py-1 rounded">ランダム生成</button>
                     </div>
                 </div>
-                <div className="w-1/2 flex flex-col items-center border border-zinc-200 p-4 gap-2 bg-white rounded">
-                    <input
-                        type="text"
-                        value={labelInput.name}
-                        onChange={(e) => setLabelInput({ ...labelInput, name: e.target.value })}
-                        className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
-                        placeholder="名前"
-                    />
+                { user && (
 
-                    <select
-                        value={labelInput.antenna || ""}
-                        onChange={(e) => setLabelInput({ ...labelInput, antenna: e.target.value as AntennaID })}
-                        className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
-                    >
-                        <option value="">(アンテナ)</option>
-                        {antennaOptions.map(opt => (
-                            <option key={opt.id} value={opt.id}>
-                                {opt.label}
-                            </option>
-                        ))}
-                    </select>
-
-                    <select
-                        value={labelInput.head || ""}
-                        onChange={(e) => setLabelInput({ ...labelInput, head: e.target.value as HeadID })}
-                        className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
-                    >
-                        <option value="">(頭の形)</option>
-                        {headOptions.map(opt => (
-                            <option key={opt.id} value={opt.id}>{opt.label}</option>
-                        ))}
-                    </select>
-
-                    <select
-                        value={labelInput.color || ""}
-                        onChange={(e) => setLabelInput({ ...labelInput, color: e.target.value as ColorID })}
-                        className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
-                    >
-                        <option value="">(色)</option>
-                        {colorOptions.map(opt => (
-                            <option key={opt.id} value={opt.id}>{opt.label}</option>
-                        ))}
-                    </select>
-                    
-                    <div className="w-3/4 bg-white flex justify-center items-center space-x-2 rounded">
-                        <label htmlFor="hp" className="text-zinc-700">&#xff28;&#xff30;:</label>
+                    <div className="w-1/2 max-w-2xl flex flex-col items-center border border-zinc-200 p-4 gap-2 bg-white rounded">
                         <input
-                            id="hp"
-                            type="range"
-                            min={0}
-                            max={100}
-                            value={labelInput.hp ?? 0}
-                            onChange={(e) => setLabelInput({ ...labelInput, hp: Number(e.target.value) })}
-                            className="w-2/3"
+                            type="text"
+                            value={labelInput.name}
+                            onChange={(e) => setLabelInput({ ...labelInput, name: e.target.value })}
+                            className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
+                            placeholder="名前"
                         />
-                        <span>{labelInput.hp ?? 0}</span>
-                    </div>
-                    
-                    <div className="w-3/4 bg-white flex justify-center items-center space-x-2 rounded">
-                        <label htmlFor="evasion" className="text-zinc-700">回避:</label>
-                        <input
-                            id="evasion"
-                            type="range"
-                            min={0}
-                            max={50}
-                            value={labelInput.evasion ?? 0}
-                            onChange={(e) => setLabelInput({ ...labelInput, evasion: Number(e.target.value) })}
-                            className="w-2/3"
-                        />
-                        <span>{labelInput.evasion ?? 0}</span>
-                    </div>
 
-                    <textarea
-                        value={labelInput.notes}
-                        onChange={(e) => setLabelInput({ ...labelInput, notes: e.target.value })}
-                        className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
-                        placeholder="メモ"
-                    />
-                    <div className="flex justify-center gap-2">
-                        <button onClick={handleAddLabel} className="bg-gray-500 text-white px-3 py-1 rounded">ラベル追加</button>
-                        <button onClick={handleSave} className="bg-green-500 text-white px-3 py-1 rounded">保存</button>
-                    </div>
-                    <div className="w-3/4">
-                        {labelList.map((lbl, index) => (
-                        <div key={index} className="border relative border-zinc-200 p-4">
-                            <button onClick={() => handleRemoveLabel(index)} className="absolute top-0 right-2 text-xs text-red-500 font-bold cursor-pointer">
-                                x
-                            </button>
-                            <div>名前: {lbl.name}</div>
-                            <div>アンテナ: {lbl.antenna && antennaOptions[Number(lbl.antenna)].label}</div>
-                            <div>頭の形: {lbl.head && headOptions[Number(lbl.head)].label}</div>
-                            <div>色: {lbl.color && colorLabelMap[lbl.color]}</div>
-                            <div>HP: {lbl.hp}</div>
-                            <div>回避率: {lbl.evasion}</div>
-                            <div>備考: {lbl.notes}</div>
+                        <select
+                            value={labelInput.antenna || ""}
+                            onChange={(e) => setLabelInput({ ...labelInput, antenna: e.target.value as AntennaID })}
+                            className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
+                        >
+                            <option value="">(アンテナ)</option>
+                            {antennaOptions.map(opt => (
+                                <option key={opt.id} value={opt.id}>
+                                    {opt.label}
+                                </option>
+                            ))}
+                        </select>
+
+                        <select
+                            value={labelInput.head || ""}
+                            onChange={(e) => setLabelInput({ ...labelInput, head: e.target.value as HeadID })}
+                            className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
+                        >
+                            <option value="">(頭の形)</option>
+                            {headOptions.map(opt => (
+                                <option key={opt.id} value={opt.id}>{opt.label}</option>
+                            ))}
+                        </select>
+
+                        <select
+                            value={labelInput.color || ""}
+                            onChange={(e) => setLabelInput({ ...labelInput, color: e.target.value as ColorID })}
+                            className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
+                        >
+                            <option value="">(色)</option>
+                            {colorOptions.map(opt => (
+                                <option key={opt.id} value={opt.id}>{opt.label}</option>
+                            ))}
+                        </select>
+                        
+                        <div className="w-3/4 bg-white flex justify-center items-center space-x-2 rounded">
+                            <label htmlFor="hp" className="text-zinc-700">&#xff28;&#xff30;:</label>
+                            <input
+                                id="hp"
+                                type="range"
+                                min={0}
+                                max={100}
+                                value={labelInput.hp ?? 0}
+                                onChange={(e) => setLabelInput({ ...labelInput, hp: Number(e.target.value) })}
+                                className="w-2/3"
+                            />
+                            <span>{labelInput.hp ?? 0}</span>
                         </div>
-                        ))}
+                        
+                        <div className="w-3/4 bg-white flex justify-center items-center space-x-2 rounded">
+                            <label htmlFor="evasion" className="text-zinc-700">回避:</label>
+                            <input
+                                id="evasion"
+                                type="range"
+                                min={0}
+                                max={50}
+                                value={labelInput.evasion ?? 0}
+                                onChange={(e) => setLabelInput({ ...labelInput, evasion: Number(e.target.value) })}
+                                className="w-2/3"
+                            />
+                            <span>{labelInput.evasion ?? 0}</span>
+                        </div>
+
+                        <textarea
+                            value={labelInput.notes}
+                            onChange={(e) => setLabelInput({ ...labelInput, notes: e.target.value })}
+                            className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
+                            placeholder="メモ"
+                        />
+                        <div className="flex justify-center gap-2">
+                            <button onClick={handleAddLabel} className="bg-gray-500 text-white px-3 py-1 rounded">ラベル追加</button>
+                            {labelList.length ? (
+                                <button onClick={handleSave} className="bg-green-500 text-white px-3 py-1 rounded">保存</button>
+                            ): ""}
+                        </div>
+                        <div className="w-3/4">
+                            {labelList.map((lbl, index) => (
+                            <div key={index} className="border relative border-zinc-200 p-4">
+                                <button onClick={() => handleRemoveLabel(index)} className="absolute top-0 right-2 text-xs text-red-500 font-bold cursor-pointer">
+                                    x
+                                </button>
+                                <div>名前: {lbl.name}</div>
+                                <div>アンテナ: {lbl.antenna && antennaOptions[Number(lbl.antenna)].label}</div>
+                                <div>頭の形: {lbl.head && headOptions[Number(lbl.head)].label}</div>
+                                <div>色: {lbl.color && colorLabelMap[lbl.color]}</div>
+                                <div>HP: {lbl.hp}</div>
+                                <div>回避率: {lbl.evasion}</div>
+                                <div>備考: {lbl.notes}</div>
+                            </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
 
             <BodyChart/>
 
-            <div className="w-full">
-                <h2 className="font-semibold mt-4">保存済みQRコード:</h2>
+            <div className="w-full max-w-4xl">
+                <h2 className="font-semibold mt-4 text-zinc-700 text-center">保存済みQRコード</h2>
                 <ul className="w-full mt-2 space-y-4">
                     {QRList.map((item) => (
                         <li key={item.id} className="flex w-full border p-4 border-gray-200 rounded justify-between">
-                            <div className="flex flex-col">
-                                <QRCode value={item.value} size={64}/>
-                                <div className="mt-2 text-sm text-zinc-300">Value: {item.value}</div>
+                            <div className="flex flex-col justify-between">
+                                <div>
+                                    <QRCode value={item.value} size={64}/>
+                                    <div className="my-2 text-sm text-zinc-300">Value: {item.value}</div>
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        setCurrentValue(item.value);
+                                    }}
+                                    className="bg-zinc-300 text-white px-3 py-1 ring-2 ring-zinc-50 rounded self-start"
+                                >
+                                    呼び出し
+                                </button>
                             </div>
                             <div className="flex">
                                 <ul className="flex p-2 snap-x snap-mandatory gap-2 rounded-md overflow-x-auto w-74">
@@ -271,7 +293,7 @@ function App() {
                                                         setEditLabelData({ ...lbl });
                                                         setEditModalOpen(true);
                                                     }}
-                                                    className="bg-green-500 text-white px-3 py-1 ring-2 rounded"
+                                                    className="bg-green-500 text-white px-3 py-1 ring-2 ring-zinc-50 rounded"
                                                 >
                                                     編集
                                                 </button>
@@ -383,22 +405,6 @@ function App() {
                                                                 >
                                                                     保存
                                                                 </button>
-                                                            </div>
-                                                            <div className="w-3/4">
-                                                                {labelList.map((lbl, index) => (
-                                                                <div key={index} className="border relative border-zinc-200 p-4">
-                                                                    <button onClick={() => handleRemoveLabel(index)} className="absolute top-0 right-2 text-xs text-red-500 font-bold cursor-pointer">
-                                                                        x
-                                                                    </button>
-                                                                    <div>名前: {lbl.name}</div>
-                                                                    <div>アンテナ: {lbl.antenna && antennaOptions[Number(lbl.antenna)].label}</div>
-                                                                    <div>頭の形: {lbl.head && headOptions[Number(lbl.head)].label}</div>
-                                                                    <div>色: {lbl.color && colorLabelMap[lbl.color]}</div>
-                                                                    <div>HP: {lbl.hp}</div>
-                                                                    <div>回避率: {lbl.evasion}</div>
-                                                                    <div>備考: {lbl.notes}</div>
-                                                                </div>
-                                                                ))}
                                                             </div>
                                                         </div>
                                                     </div>
