@@ -1,3 +1,3 @@
 export const adminUIDs: string[] = [
-    // "lI1OSS1DLkYfIOrYnYlWyJ0ZX8p2",
+    "lI1OSS1DLkYfIOrYnYlWyJ0ZX8p2",
 ];
