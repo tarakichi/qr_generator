@@ -137,7 +137,7 @@ function App() {
                         <p className="text-xs text-zinc-300">※QRコードの保存にはログインが必要です。</p>
                     </div>
                 )}
-                <img src="/Primary_Horizontal_Lockup_Full_Color.png" alt="firebase logo" className="ml-auto mr-0 mt-4 max-w-18" />
+                <img src="Primary_Horizontal_Lockup_Full_Color.png" alt="firebase logo" className="ml-auto mr-0 mt-4 max-w-18" />
             </div>
             <div className="w-full flex gap-2 justify-center">
                 <div className="w-1/2 max-w-2xl flex flex-col items-center border border-zinc-200 p-4 bg-white rounded gap-2">
