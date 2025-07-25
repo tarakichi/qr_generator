@@ -10,7 +10,7 @@ import { auth } from './firebase';
 import { adminUIDs } from './constants/adminUIDs';
 import { GoogleIcon } from './components/GoogleIcon';
 
-function generateRandomString(length = 40) {
+function generateRandomString(length = 50) {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
 }
@@ -40,6 +40,8 @@ function App() {
     const [editingQRId, setEditingQRId] = useState<string | null>(null);
     const [editingLabelIndex, setEditingLabelIndex] = useState<number | null>(null);
     const [editLabelData, setEditLabelData] = useState<LabelEntry | null>(null);
+
+    const [manualInput, setManualInput] = useState<string | null>(null);
 
     useEffect(() => {
         const unsubscribe = subscribeQRData(setQRList);
@@ -106,6 +108,15 @@ function App() {
         setLabelList(labelList.filter((_, i) => i !== index));
     }
 
+    const manualInputValue = () => {
+        if (manualInput) {
+            setCurrentValue(manualInput);
+            setManualInput(null);
+        } else {
+            alert("値を入力してください");
+        }
+    }
+
     if (loading) return <div>読み込み中...</div>
 
     return (
@@ -136,17 +147,36 @@ function App() {
                         <GoogleIcon />
                         <span className="text-sm font-bold text-zinc-300">Googleでログイン</span>
                         </button>
-                        <p className="text-xs text-zinc-300">※QRコードの保存にはログインが必要です。</p>
+                        <p className="text-xs text-zinc-300">※QRコードの保存にはログインが必要です</p>
                     </div>
                 )}
                 <img src="Primary_Horizontal_Lockup_Full_Color.png" alt="firebase logo" className="ml-auto mr-0 mt-4 max-w-18" />
             </div>
             <div className="w-full flex gap-2 justify-center">
-                <div className="w-1/2 max-w-2xl flex flex-col items-center border border-zinc-200 p-4 bg-white rounded gap-2">
-                    <QRCode value={currentValue}/>
-                    <p className="text-xs text-zinc-300">Value: {currentValue}</p>
-                    <div className="flex justify-center gap-2">
-                        <button onClick={handleNext} className="bg-blue-500 text-white px-3 py-1 rounded">ランダム生成</button>
+                <div className="w-1/2 max-w-2xl flex flex-col items-center justify-start gap-2">
+                    <div className="w-full flex flex-col items-center gap-2 border border-zinc-200 p-4 bg-white rounded wrap-anywhere">
+                        <QRCode value={currentValue}/>
+                        <p className="text-xs text-zinc-300">Value: {currentValue}</p>
+                        <div className="flex justify-center gap-2">
+                            <button onClick={handleNext} className="bg-blue-500 text-white px-3 py-1 rounded">ランダム生成</button>
+                        </div>
+                    </div>
+                    <div className="w-full flex flex-col items-center gap-2 border border-zinc-200 p-4 bg-white rounded">
+                        <input
+                            type="text"
+                            value={manualInput || ""}
+                            onChange={(e) => setManualInput(e.target.value)}
+                            className="w-3/4 bg-white border text-center rounded border-zinc-200 text-zinc-700"
+                            placeholder="手動で値を入力..."
+                        />
+                        <div className="flex justify-center gap-2">
+                            <button
+                                onClick={manualInputValue}
+                                className="bg-gray-500 text-white px-3 py-1 rounded"
+                            >
+                                値から生成
+                            </button>
+                        </div>
                     </div>
                 </div>
                 { user && (
@@ -261,7 +291,7 @@ function App() {
                 <h2 className="font-semibold mt-4 text-zinc-700 text-center">保存済みQRコード</h2>
                 <ul className="w-full mt-2 space-y-4">
                     {QRList.map((item) => (
-                        <li key={item.id} className="flex w-full border p-4 border-gray-200 rounded justify-between">
+                        <li key={item.id} className="flex w-full border p-4 border-gray-200 rounded justify-between wrap-anywhere">
                             <div className="flex flex-col justify-between">
                                 <div>
                                     <QRCode value={item.value} size={64}/>
