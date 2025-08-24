@@ -1,7 +1,5 @@
 export const BodyChart = () => (
     <div className="flex flex-col items-center">
-        <img src="GTKvlqxbQAIZ4jY.jfif" alt="体格表" />
-
         <table className="bg-white">
             <caption>
             体格表
